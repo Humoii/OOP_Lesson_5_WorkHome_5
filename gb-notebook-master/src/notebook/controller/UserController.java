@@ -19,9 +19,18 @@ public class UserController {
     }
     public static User createUser() {
         String firstName = UserView.prompt("Имя: ");
+        if(firstName.isEmpty()){
+            throw new RuntimeException("Имя не может быть пустым");
+        }
         String lastName = UserView.prompt("Фамилия: ");
+        if(lastName.isEmpty()){
+            throw new RuntimeException("Фамилия не может быть пустым");
+        }
         String phone = UserView.prompt("Номер телефона: ");
-        return new User(firstName, lastName, phone);
+        if(phone.isEmpty()){
+            throw new RuntimeException("Номер телефона не может быть пустым");
+        }
+        return new User(firstName.replaceAll(" ", ""), lastName.replaceAll(" ", ""), phone);
     }
 
     public User readUser(Long userId) throws Exception {
@@ -34,14 +43,16 @@ public class UserController {
 
         throw new RuntimeException("User not found");
     }
-    public User deleteUser (Long userId){
+    public void deleteUser (Long userId){
         repository.delete(userId);
-        return null;
     }
 
 
     public void updateUser(String userId, User update) {
         update.setId(Long.parseLong(userId));
         repository.update(Long.parseLong(userId), update);
+    }
+    public List<User> getAllUsers(){
+        return this.repository.findAll();
     }
 }
